@@ -3,5 +3,14 @@
   "version": "1.0.0",
   "displayName": "Merge2 Core",
   "unity": "2021.3",
-  "description": "Template for merge2 games."
+  "description": "Template for merge2 games.",
+  "keywords": [
+        "merge2",
+        "sdk"
+    ],
+  "repository": {
+     "type": "git",
+     "url": "https://github.com/ArtemVetik/com.agava.merge2.git"
+  },
+  "license": "MIT"
 }
