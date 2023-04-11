@@ -7,18 +7,20 @@ namespace Agava.Merge2.Tasks
     public class TaskList
     {
         private readonly IBoard _board;
-        private readonly TaskProgress _progressTask;
+        private readonly TaskReward _reward;
         private readonly List<Task> _tasks;
+        private readonly TaskProgress _progressTask;
 
-        public TaskList(IBoard board, IEnumerable<Task> tasks)
+        public TaskList(IBoard board, IEnumerable<Task> tasks, TaskReward reward)
         {
             _board = board;
-            _progressTask = new TaskProgress(board);
             _tasks = new List<Task>(tasks);
+            _reward = reward;
+            _progressTask = new TaskProgress(board);
         }
 
-        public TaskList(IBoard board)
-            : this(board, Array.Empty<Task>())
+        public TaskList(IBoard board, TaskReward reward)
+            : this(board, Array.Empty<Task>(), reward)
         { }
 
         public IReadOnlyCollection<Task> Tasks => _tasks;
@@ -43,6 +45,8 @@ namespace Agava.Merge2.Tasks
 
             if (_progressTask.RequiredItems.Count != 0)
                 throw new InvalidOperationException("Task can not be completed");
+
+            _reward.Award(task);
 
             foreach (var position in _progressTask.ContainedPositions)
                 _board.Remove(position);

@@ -5,19 +5,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 
 
-## [Unreleased]
-
-### Breaking Changes
+## [1.1.0] - 2023-04-11
 
 ### Added
 
-### Changed
-
-### Removed
-
-### Fixed
-
-
+- `TaskReward` class.
+- Required `TaskReward` argument to the constructor of the `TaskList` class.
+- Required TaskReward argument to the `JsonTaskListSave.Load()` method.
+- `IRewardCurrency` interface for accrual of reward currency.
+- `IRewardValue` interface for calculating the amount of reward for completing a task.
 
 ## [1.0.0] - 2023-04-04
 

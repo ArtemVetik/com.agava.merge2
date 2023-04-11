@@ -9,6 +9,7 @@ namespace Agava.Merge2.Tasks.Tests
     {
         private IBoard _board;
         private TaskList _taskList;
+        private TaskReward _reward;
         private IJsonSaveRepository _saveRepository;
 
         [SetUp]
@@ -22,7 +23,8 @@ namespace Agava.Merge2.Tasks.Tests
                  new MapCoordinate(0, 3), new MapCoordinate(1, 3), new MapCoordinate(2, 3), new MapCoordinate(3, 3),
             });
 
-            _taskList = new TaskList(_board);
+            _reward = new TaskReward(new TestCurrency(), new TestRewardValue());
+            _taskList = new TaskList(_board, _reward);
             _saveRepository = new MemoryJsonSaveRepository();
         }
 
@@ -35,7 +37,7 @@ namespace Agava.Merge2.Tasks.Tests
             
             save.Save(_taskList);
 
-            var savedList = save.Load(_board);
+            var savedList = save.Load(_board, _reward);
 
             Assert.AreEqual(2, savedList.Tasks.Count);
             Assert.AreEqual(1, savedList.Tasks.ToArray()[0].TotalItems.Count);

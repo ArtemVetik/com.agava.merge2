@@ -9,6 +9,7 @@ namespace Agava.Merge2.Tasks.Tests
     {
         private IBoard _board;
         private TaskList _taskList;
+        private TestCurrency _testCurrency;
 
         [SetUp]
         public void Initialize()
@@ -25,8 +26,11 @@ namespace Agava.Merge2.Tasks.Tests
             _board.Add(new Item("Item2"), new MapCoordinate(1, 1));
             _board.Add(new Item("Item3"), new MapCoordinate(2, 1));
             _board.Add(new Item("Item4"), new MapCoordinate(3, 2));
+            _board.Add(new Item("Item5", 2), new MapCoordinate(2, 3));
+            _board.Add(new Item("Item6", 1), new MapCoordinate(3, 3));
 
-            _taskList = new TaskList(_board);
+            _testCurrency = new TestCurrency();
+            _taskList = new TaskList(_board, new TaskReward(_testCurrency, new TestRewardValue()));
         }
 
         [Test]
@@ -62,6 +66,17 @@ namespace Agava.Merge2.Tasks.Tests
             Assert.False(_board.OpenedCollection.Any(coordinate => _board.HasItem(coordinate) && _board.Item(coordinate).Id == "Item1"));
             Assert.False(_board.OpenedCollection.Any(coordinate => _board.HasItem(coordinate) && _board.Item(coordinate).Id == "Item3"));
             Assert.AreEqual(0, _taskList.Tasks.Count);
+        }
+
+        [Test]
+        public void ShouldAwardRewardAfterComplete()
+        {
+            var task = new Task(new[] { new Item("Item5", 2), new Item("Item3"), new Item("Item6", 1) });
+
+            _taskList.Add(task);
+            _taskList.Complete(task);
+
+            Assert.AreEqual(6, _testCurrency.Value);
         }
 
         [Test]

@@ -19,14 +19,14 @@ namespace Agava.Merge2.Tasks
             _saveRepository.Save(json);
         }
 
-        public TaskList Load(IBoard board)
+        public TaskList Load(IBoard board, TaskReward reward)
         {
             if (_saveRepository.HasSave == false)
-                return new TaskList(board);
+                return new TaskList(board, reward);
 
             var json = _saveRepository.Load();
             var tasks = JsonConvert.DeserializeObject<IEnumerable<Task>>(json);
-            return new TaskList(board, tasks);
+            return new TaskList(board, tasks, reward);
         }
     }
 }
