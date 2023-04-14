@@ -16,7 +16,7 @@ Does not reference Unity Engine, so it could be used in a regular C# project.</i
 Make sure you have standalone [Git](https://git-scm.com/downloads) installed first. Reboot after installation.  
 In Unity, open "Window" -> "Package Manager".  
 Click the "+" sign on top left corner -> "Add package from git URL..."  
-Paste this: `https://github.com/ArtemVetik/com.agava.merge2.git#1.1.0`  
+Paste this: `https://github.com/ArtemVetik/com.agava.merge2.git#1.1.1`  
 See minimum required Unity version in the `package.json` file.
 
 This project can also be installed through OpenUPM, [here.](https://openupm.com/packages/com.agava.merge2/)
