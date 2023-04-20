@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace Agava.Merge2.Core
@@ -8,16 +9,27 @@ namespace Agava.Merge2.Core
         private readonly int _limit;
         private readonly IBoard _board;
         private readonly IClickCommand _clickCommand;
+        private readonly IJsonSaveRepository _saveRepository;
         private readonly Dictionary<string, ExecutesPair> _executesPairByItemGuid;
         private string _lastExecutedItemGuid;
 
-        public LimitCommand(int limit, IBoard board, IClickCommand clickCommand)
+        public LimitCommand(int limit, IBoard board, IClickCommand clickCommand, IJsonSaveRepository saveRepository)
         {
             _limit = limit;
             _board = board;
             _clickCommand = clickCommand;
+            _saveRepository = saveRepository;
             _lastExecutedItemGuid = "";
-            _executesPairByItemGuid = new Dictionary<string, ExecutesPair>();
+
+            if (_saveRepository.HasSave)
+            {
+                var json = _saveRepository.Load();
+                _executesPairByItemGuid = JsonConvert.DeserializeObject<Dictionary<string, ExecutesPair>>(json);
+            }
+            else
+            {
+                _executesPairByItemGuid = new Dictionary<string, ExecutesPair>();
+            }
         }
 
         void IClickCommand.Execute(int itemLevel, MapCoordinate clickPosition)
@@ -35,6 +47,8 @@ namespace Agava.Merge2.Core
 
             var clickItemExecutesPair = _executesPairByItemGuid[_lastExecutedItemGuid];
             clickItemExecutesPair.ExecutesCount += 1;
+
+            _saveRepository.Save(JsonConvert.SerializeObject(_executesPairByItemGuid));
 
             if (clickItemExecutesPair.ExecutesCount != _limit)
                 return;
@@ -69,10 +83,12 @@ namespace Agava.Merge2.Core
                     executesPair.LimitHasBeenReached = false;
                     executesPair.ExecutesCount = _limit - 1;
                     _clickCommand.Undo();
+                    _saveRepository.Save(JsonConvert.SerializeObject(_executesPairByItemGuid));
                     return;
                 }
 
                 executesPair.ExecutesCount -= 1;
+                _saveRepository.Save(JsonConvert.SerializeObject(_executesPairByItemGuid));
             }
             else
             {
@@ -80,6 +96,7 @@ namespace Agava.Merge2.Core
                     throw new InvalidOperationException();
 
                 executesPair.ExecutesCount -= 1;
+                _saveRepository.Save(JsonConvert.SerializeObject(_executesPairByItemGuid));
             }
         }
 

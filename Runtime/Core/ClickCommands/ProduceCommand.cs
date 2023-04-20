@@ -28,7 +28,7 @@ namespace Agava.Merge2.Core
             if (freeCoordinates.Length == 0)
                 throw new CommandException();
 
-            var item = _levels[itemLevel].RandomItem();
+            var item = _levels[itemLevel].RandomItem().Clone() as Item;
             var coordinate = freeCoordinates[_random.Next(0, freeCoordinates.Length)];
 
             _board.Add(item, coordinate);

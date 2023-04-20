@@ -92,14 +92,14 @@ namespace Agava.Merge2.Core.Tests.ClickCommandsTests
 
             _repository.AddClick(item);
             Assert.DoesNotThrow(() => _repository.RemoveClick(item));
-            Assert.AreEqual(0, _repository.CooldownItems.Count);
+            Assert.AreEqual(0, _repository.Items.Count);
             
             _repository.AddClick(item);
             _repository.AddClick(item);
             Assert.DoesNotThrow(() => _repository.RemoveClick(item));
-            Assert.AreEqual(1, _repository.CooldownItems.Count);
+            Assert.AreEqual(1, _repository.Items.Count);
             Assert.DoesNotThrow(() => _repository.RemoveClick(item));
-            Assert.AreEqual(0, _repository.CooldownItems.Count);
+            Assert.AreEqual(0, _repository.Items.Count);
             Assert.Throws<InvalidOperationException>(() => _repository.RemoveClick(item));
         }
 
@@ -147,9 +147,9 @@ namespace Agava.Merge2.Core.Tests.ClickCommandsTests
             var secondRepository = new CooldownRepository(_settings, new LocalTimeProvider(), _save);
             secondRepository.Load();
 
-            Assert.AreEqual(2, secondRepository.CooldownItems.Count);
-            Assert.True(secondRepository.CooldownItems.Any(guid => item1.Guid == guid));
-            Assert.True(secondRepository.CooldownItems.Any(guid => item1_2.Guid == guid));
+            Assert.AreEqual(2, secondRepository.Items.Count);
+            Assert.True(secondRepository.Items.Any(guid => item1.Guid == guid));
+            Assert.True(secondRepository.Items.Any(guid => item1_2.Guid == guid));
         }
     }
 }

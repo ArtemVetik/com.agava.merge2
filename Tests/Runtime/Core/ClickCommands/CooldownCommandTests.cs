@@ -35,7 +35,7 @@ namespace Agava.Merge2.Core.Tests.ClickCommandsTests
         public void Execute()
         {
             _command.Execute(0, new MapCoordinate(1, 0));
-            Assert.AreEqual(1, _repository.CooldownItems.Count);
+            Assert.AreEqual(1, _repository.Items.Count);
 
             for (int i = 0; i < 4; i++)
                 _command.Execute(0, new MapCoordinate(1, 0));
@@ -50,7 +50,7 @@ namespace Agava.Merge2.Core.Tests.ClickCommandsTests
 
             _command.Execute(0, new MapCoordinate(1, 0));
             Assert.DoesNotThrow(() => _command.Undo());
-            Assert.AreEqual(0, _repository.CooldownItems.Count);
+            Assert.AreEqual(0, _repository.Items.Count);
             Assert.Throws<InvalidOperationException>(() => _command.Undo());
 
             _command.Execute(0, new MapCoordinate(1, 0));

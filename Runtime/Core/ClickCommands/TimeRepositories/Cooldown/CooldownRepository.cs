@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Agava.Merge2.Core
 {
-    public class CooldownRepository
+    public class CooldownRepository : ITimeRepository
     {
         private readonly CooldownSettings _settings;
         private readonly ITimeProvider _timeProvider;
@@ -20,8 +20,15 @@ namespace Agava.Merge2.Core
             _cooldownItems = new Dictionary<string, ItemCooldown>();
         }
 
-        public IReadOnlyCollection<string> CooldownItems => _cooldownItems.Keys;
+        public IReadOnlyCollection<string> Items => _cooldownItems.Keys;
         public bool Cooldown(Item item, out Cooldown cooldown) => _settings.Cooldown(item, out cooldown);
+        
+        public bool Setting(Item item, out int seconds)
+        {
+            var hasSetting = Cooldown(item, out Cooldown cooldown);
+            seconds = cooldown.ColldownSeconds;
+            return hasSetting;
+        }
 
         public TimeSpan Remains(Item item)
         {

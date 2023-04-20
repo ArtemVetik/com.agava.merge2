@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NUnit.Framework;
+using Agava.Merge2.Tests;
 
 namespace Agava.Merge2.Core.Tests.ClickCommandsTests
 {
@@ -8,6 +9,7 @@ namespace Agava.Merge2.Core.Tests.ClickCommandsTests
     {
         private IBoard _board;
         private IClickCommand _limitCommand;
+        private IJsonSaveRepository _saveRepository;
         private TestClickCommand _nestedClickCommand;
 
         [SetUp]
@@ -24,7 +26,8 @@ namespace Agava.Merge2.Core.Tests.ClickCommandsTests
             _board.Add(new Item("001"), new MapCoordinate(1, 0));
             
             _nestedClickCommand = new TestClickCommand();
-            _limitCommand = new LimitCommand(2, _board, _nestedClickCommand);
+            _saveRepository = new MemoryJsonSaveRepository();
+            _limitCommand = new LimitCommand(2, _board, _nestedClickCommand, _saveRepository);
         }
 
         [Test]
@@ -82,7 +85,7 @@ namespace Agava.Merge2.Core.Tests.ClickCommandsTests
         [Test]
         public void ExecuteShouldThrowIfLimitLessThanZero()
         {
-            IClickCommand limitCommand = new LimitCommand(-1, _board, _nestedClickCommand);
+            IClickCommand limitCommand = new LimitCommand(-1, _board, _nestedClickCommand, _saveRepository);
             Assert.Throws<CommandException>(() => limitCommand.Execute(1, new MapCoordinate(1, 0)));
         }
         
@@ -106,6 +109,17 @@ namespace Agava.Merge2.Core.Tests.ClickCommandsTests
             Assert.AreEqual(0, _limitCommand.Filter<DeleteCommand>().Count());
             Assert.AreEqual(1, _limitCommand.Filter<LimitCommand>().Count());
             Assert.AreEqual(1, _limitCommand.Filter<TestClickCommand>().Count());
+        }
+
+        [Test]
+        public void ShouldSaveStates()
+        {
+            _limitCommand.Execute(1, new MapCoordinate(0, 0));
+
+            IClickCommand command = new LimitCommand(2, _board, _nestedClickCommand, _saveRepository);
+            command.Execute(1, new MapCoordinate(0, 0));
+            
+            Assert.IsTrue(_nestedClickCommand.ExecuteCalled);
         }
     }
 }
